@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>{$title|default="页面标题"}</title>
+    <!--    <link rel="stylesheet" href="/static/css/bootstrap.css">-->
+    <!--    <script src="/static/js/jquery-1.11.3.min.js"></script>-->
+    <!--    <script src="/static/js/bootstrap.js"></script>-->
+    {load href="http://phpwebtest.com:8888/myblog1/public/static/css/bootstrap.css" /}
+    {load href="http://phpwebtest.com:8888/myblog1/public/static/js/jquery-1.11.3.min.js" /}
+    {load href="http://phpwebtest.com:8888/myblog1/public/static/js/bootstrap.js" /}
+    {load href="http://phpwebtest.com:8888/myblog1/public/static/js/nicEdit.js" /}
+</head>
+<body>
+<div class="container">
+    <!-- 导航 -->
+    <div class="row">
+        <div class="col-md-12">
+            {include file="public::nav" /}
+        </div>
+    </div>
+    <!-- 头部结束-->

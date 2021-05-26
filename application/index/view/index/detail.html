@@ -1,0 +1,97 @@
+{extend name="public::base" /}
+{block name="body" /}
+<div class="row">
+    <div class="col-md-8">
+        <div class="page-header">
+            <h2>{$art.cate_id|getCateName}</h2>
+        </div>
+        <div>
+                <div style="float: left;width: 80%">
+                <h4><a href="{:url('detail',['id'=>$art.id])}">{$art.title}</a></h4>
+                <p>发布者:{$art.user_id|getUserName}&nbsp;&nbsp;&nbsp;&nbsp;发布时间:{$art.create_time|date='Y-m-d'}
+                    阅读量:{$art.pv}</p>
+                    <hr/>
+                <div name="content" id="content"><?php echo htmlspecialchars_decode($art['content']);?></div>
+                <hr/>
+                <button class="btn btn-default" type="button" id="fav" user_id="{$art.user_id}" art_id="{$art.id}" session_id="{$Think.session.user_id}">收藏</button>
+<!--                <button class="btn btn-warning" type="button" id="ok" user_id="{$art.user_id}" art_id="{$art.id}" session_id="{$Think.session.user_id}">点赞</button>-->
+
+                </div>
+        </div>
+        <div>
+            <h4>发表评论</h4>
+            <form class="form-horizontal" id="comment">
+                <input type="hidden" name="art_id" value="{$art.id}">
+                <input type="hidden" name="user_id" value="{$Think.session.user_id}">
+                <textarea name="content" id="" cols="90" rows="5"></textarea>
+                <button type="button" class="btn btn-info" id="submit">提交</button>
+            </form>
+            <p class="text-success" id="res"></p>
+        </div>
+        <div>
+            {volist name="commentList" id="comment" empty="没有评论"}
+            <div>
+                <p>{$comment.user_id|getUserName} &nbsp;&nbsp;&nbsp;{$comment.create_time}</p>
+                <div style="min-height: 50px;">{$comment.content}</div>
+            </div>
+            <hr>
+            {/volist}
+        </div>
+    </div>
+
+    <script>
+        $('#submit').on('click',function () {
+            $.get("{:url('insertComment')}",$('#comment').serialize(),function (data) {
+                if (data.status == 1){
+                    // alert(1);
+                    $('#res').text(data.message);
+                }else {
+                    // alert(0)
+                    $('#res').text(data.message);
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $(function () {
+            $('#fav').on('click',function () {
+                var userId = $(this).attr('user_id');
+                var artId = $(this).attr('art_id');
+                var sessionId = $(this).attr('session_id');
+                if (userId && artId){
+                    $.ajax({
+                        type: 'get',
+                        url: "{:url('index/fav')}",
+                        data: {
+                            user_id: userId,
+                            art_id: artId,
+                            session_id: sessionId,
+                            time: new Date().getTime(),
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            switch (data.status) {
+                                case 1:
+                                    $('#fav').attr('class','btn btn-success');
+                                    $('#fav').text(data.message);
+                                    break;
+                                case 0:
+                                    $('#fav').attr('class','btn btn-default');
+                                    $('#fav').text(data.message);
+                                    break;
+                                case -1:
+                                    alert(data.message);
+                                    break;
+                                case -2:
+                                    alert(data.message);
+                                    window.location.href="{:url('index/user/login')}";
+                                    break;
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+    {/block}
